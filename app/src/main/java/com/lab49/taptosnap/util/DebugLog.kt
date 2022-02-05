@@ -5,7 +5,7 @@ import com.lab49.taptosnap.BuildConfig
 
 /**
  * Created by Edwin S. Cowart on 04 February, 2022
- * Lab49 Job Application
+ * Lab49 Take Home
  * Tap To Snap
  */
 object DebugLog {

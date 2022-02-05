@@ -9,7 +9,7 @@ import com.lab49.taptosnap.ui.BaseFragment
 
 /**
  * Created by Edwin S. Cowart on 04 February, 2022
- * Lab49 Job Application
+ * Lab49 Take Home
  * Tap To Snap
  */
 class LandingFragment : BaseFragment<FragmentLandingBinding>() {
