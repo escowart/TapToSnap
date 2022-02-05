@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
@@ -20,15 +22,13 @@ import com.lab49.taptosnap.util.DebugLog
 abstract class BaseFragment<Binding : ViewBinding> : Fragment() {
     private var _binding: Binding? = null
 
+    // Valid between onCreateView & onDestroyView.
+    protected var binding
+        get() = _binding!!
+        set(value) { _binding = value }
+
     private val isSafe: Boolean
         get() = activity != null && isAdded && !isDetached && !isRemoving
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        throw NotImplementedError("${javaClass.simpleName} must override onCreateView & inflate the binding")
-    }
 
     // Valid between onAttach & onDetach
     private val navController: NavController
@@ -42,11 +42,12 @@ abstract class BaseFragment<Binding : ViewBinding> : Fragment() {
         navController.navigate(directions)
     }
 
-    // Valid between onCreateView & onDestroyView.
-    protected var binding
-        get() = _binding!!
-        set(value) { _binding = value }
-
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        throw NotImplementedError("${javaClass.simpleName} must override onCreateView & inflate the binding")
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/MainFragment"
-        android:name="com.lab49.taptosnap.ui.MainFragment"
+        android:name="com.lab49.taptosnap.ui.main.MainFragment"
         android:label="Main"
         tools:layout="@layout/fragment_main">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/LandingFragment"
-        android:name="com.lab49.taptosnap.ui.LandingFragment"
+        android:name="com.lab49.taptosnap.ui.landing.LandingFragment"
         android:label="Landing"
         tools:layout="@layout/fragment_landing">
 

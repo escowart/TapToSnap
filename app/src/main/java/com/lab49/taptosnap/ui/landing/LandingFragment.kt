@@ -1,10 +1,11 @@
-package com.lab49.taptosnap.ui
+package com.lab49.taptosnap.ui.landing
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.lab49.taptosnap.databinding.FragmentLandingBinding
+import com.lab49.taptosnap.ui.BaseFragment
 
 /**
  * Created by Edwin S. Cowart on 04 February, 2022
