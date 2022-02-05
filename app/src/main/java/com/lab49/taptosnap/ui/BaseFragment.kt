@@ -10,6 +10,7 @@ import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.viewbinding.ViewBinding
 import com.lab49.taptosnap.R
+import com.lab49.taptosnap.util.DebugLog
 
 /**
  * Created by Edwin S. Cowart on 04 February, 2022
@@ -34,7 +35,10 @@ abstract class BaseFragment<Binding : ViewBinding> : Fragment() {
         get() = requireActivity().findNavController(R.id.nav_host_fragment_content_main)
 
     fun navigate(directions: NavDirections) {
-        if (!isSafe) return
+        if (!isSafe) {
+            DebugLog.e("navigate($directions) while unsafe")
+            return
+        }
         navController.navigate(directions)
     }
 
