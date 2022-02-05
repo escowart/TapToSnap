@@ -5,6 +5,7 @@ Created by Edwin S. Cowart
 Take photos of items mentioned on each tile to win the game!
 
 [Design](Design.pdf)
+
 [Instructions](Instructions.pdf)
 
 ## Setup
