@@ -1,0 +1,7 @@
+build.gradle
+README.md
+settings.gradle
+gradlew
+gradlew.bat
+gradle/*
+gradle/wrapper/*

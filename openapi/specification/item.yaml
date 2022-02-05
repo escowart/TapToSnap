@@ -1,0 +1,76 @@
+paths:
+  /item/list:
+    get:
+      operationId: getItems
+      summary: Get the list of items
+      description: Get the list of items
+      tags:
+        - item
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetItemsResponse"
+  /item/image:
+    post:
+      operationId: uploadImage
+      summary: Upload image for the given item
+      description: Upload image for the given item
+      tags:
+        - item
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/UploadImagePayload"
+            encoding: # The same level as schema
+              imageLabel:
+                contentType: application/json; charset=utf-8
+              image:
+                contentType: image/png; image/jpeg
+                headers:
+                  X-Rate-Limit-Limit:
+                    description: The number of allowed requests in the current period
+                    schema:
+                      type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadImageResponse"
+components:
+  schemas:
+    GetItemsResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/Item"
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+        - id
+        - name
+    UploadImagePayload:
+      type: object
+      properties:
+        imageLabel:
+          type: string
+        image:
+          type: string
+          format: binary
+      required:
+        - imageLabel
+        - image
+    UploadImageResponse:
+      type: object
+      properties:
+        matched:
+          type: boolean
+      required:
+        - matched

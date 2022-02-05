@@ -1,0 +1,12 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Tap To Snap API
+tags:
+  - name: item
+
+paths:
+  /item/list:
+    $ref: "item.yaml#/paths/~1item~1list"
+  /item/image:
+    $ref: "item.yaml#/paths/~1item~1image"
