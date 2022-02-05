@@ -2,6 +2,6 @@
 
 Created by Edwin S. Cowart
 
-[Design]('./Design.pdf)
-[Instructions]('./Instructions.pdf)
+[Design](Design.pdf)
+[Instructions](Instructions.pdf)
 
