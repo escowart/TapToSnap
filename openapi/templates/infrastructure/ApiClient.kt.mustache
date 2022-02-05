@@ -1,5 +1,6 @@
 package {{packageName}}.infrastructure
 
+import {{packageName}}.util.DebugLog
 {{#supportAndroidApiLevel25AndBelow}}
 import android.os.Build
 {{/supportAndroidApiLevel25AndBelow}}
@@ -74,7 +75,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.squareup.moshi.adapter
 {{/moshi}}
 
-{{#nonPublicApi}}internal {{/nonPublicApi}}open class ApiClient(val baseUrl: String) {
+{{#nonPublicApi}}internal {{/nonPublicApi}}open class ApiClient(val runOnUiThread: (f: () -> Unit) -> Unit, val baseUrl: String) {
     {{#nonPublicApi}}internal {{/nonPublicApi}}companion object {
         protected const val ContentType = "Content-Type"
         protected const val Accept = "Accept"
@@ -308,7 +309,7 @@ import com.squareup.moshi.adapter
     }
     {{/hasAuthMethods}}
 
-    protected {{#useCoroutines}}suspend {{/useCoroutines}}inline fun <reified I, reified T: Any?> request(requestConfig: RequestConfig<I>): ApiResponse<T?> {
+    protected {{#useCoroutines}}suspend {{/useCoroutines}}inline fun <reified I, reified T: Any?> request(requestConfig: RequestConfig<I>, crossinline callback: (ApiResponse<T>) -> Unit) {
         {{#jvm-okhttp3}}
         val httpUrl = HttpUrl.parse(baseUrl) ?: throw IllegalStateException("baseUrl is invalid.")
         {{/jvm-okhttp3}}
@@ -350,76 +351,85 @@ import com.squareup.moshi.adapter
 
         // TODO: support multiple contentType options here.
         val contentType = (headers[ContentType] as String).substringBefore(";").lowercase(Locale.getDefault())
-
-        val request = when (requestConfig.method) {
-            RequestMethod.DELETE -> Request.Builder().url(url).delete(requestBody(requestConfig.body, contentType))
-            RequestMethod.GET -> Request.Builder().url(url)
-            RequestMethod.HEAD -> Request.Builder().url(url).head()
-            RequestMethod.PATCH -> Request.Builder().url(url).patch(requestBody(requestConfig.body, contentType))
-            RequestMethod.PUT -> Request.Builder().url(url).put(requestBody(requestConfig.body, contentType))
-            RequestMethod.POST -> Request.Builder().url(url).post(requestBody(requestConfig.body, contentType))
-            RequestMethod.OPTIONS -> Request.Builder().url(url).method("OPTIONS", null)
-        }.apply {
-            headers.forEach { header -> addHeader(header.key, header.value) }
-        }.build()
-
-        {{#useCoroutines}}
-        val response: Response = suspendCancellableCoroutine { continuation ->
-            val call = client.newCall(request)
-            continuation.invokeOnCancellation { call.cancel() }
-            call.enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    continuation.resumeWithException(e)
-                }
-                override fun onResponse(call: Call, response: Response) {
-                    continuation.resume(response)
-                }
-            })
+        val requestBody = when (requestConfig.method) {
+            RequestMethod.GET, RequestMethod.HEAD -> null
+            else -> requestBody(requestConfig.body, contentType)
         }
-        {{/useCoroutines}}
-        {{^useCoroutines}}
-        val response = client.newCall(request).execute()
-        {{/useCoroutines}}
+        val request = Request.Builder()
+            .url(url)
+            .method(requestConfig.method.name, requestBody)
+            .apply { headers.forEach { header -> addHeader(header.key, header.value) } }
+            .build()
 
-        val accept = response.header(ContentType)?.substringBefore(";")?.lowercase(Locale.getDefault())
-
-        // TODO: handle specific mapping types. e.g. Map<int, Class<?>>
-        return when {
-            response.isRedirect -> Redirection(
-                response.code{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
-                response.headers{{#jvm-okhttp3}}(){{/jvm-okhttp3}}.toMultimap()
-            )
-            response.isInformational -> Informational(
-                response.message{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
-                response.code{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
-                response.headers{{#jvm-okhttp3}}(){{/jvm-okhttp3}}.toMultimap()
-            )
-            response.isSuccessful -> Success(
-                responseBody(response.body{{#jvm-okhttp3}}(){{/jvm-okhttp3}}, accept),
-                response.code{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
-                response.headers{{#jvm-okhttp3}}(){{/jvm-okhttp3}}.toMultimap()
-            )
-            response.isClientError -> ClientError(
-                response.message{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
-                response.body{{#jvm-okhttp3}}(){{/jvm-okhttp3}}?.string(),
-                response.code{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
-                response.headers{{#jvm-okhttp3}}(){{/jvm-okhttp3}}.toMultimap()
-            )
-            else -> ServerError(
-                response.message{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
-                response.body{{#jvm-okhttp3}}(){{/jvm-okhttp3}}?.string(),
-                response.code{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
-                response.headers{{#jvm-okhttp3}}(){{/jvm-okhttp3}}.toMultimap()
-            )
-        }
+        val uiThreadCallback = { res: ApiResponse<T> -> runOnUiThread { callback(res) } }
+        val call = client.newCall(request)
+        call.enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                DebugLog.e(e)
+                uiThreadCallback(ClientError<T>())
+            }
+            override fun onResponse(call: Call, response: Response) {
+                val accept = response.header(ContentType)?.substringBefore(";")?.lowercase(Locale.getDefault())
+                // TODO: handle specific mapping types. e.g. Map<int, Class<?>>
+                uiThreadCallback(when {
+                    response.isRedirect -> {
+                        Redirection(
+                            response.code{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
+                            response.headers{{#jvm-okhttp3}}(){{/jvm-okhttp3}}.toMultimap()
+                        )
+                    }
+                    response.isInformational -> {
+                        Informational(
+                            response.message{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
+                            response.code{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
+                            response.headers{{#jvm-okhttp3}}(){{/jvm-okhttp3}}.toMultimap()
+                        )
+                    }
+                    response.isSuccessful -> {
+                        val successResponseBody = responseBody<T>(response.body{{#jvm-okhttp3}}(){{/jvm-okhttp3}}, accept)
+                        if (successResponseBody == null && null !is T) {
+                            DebugLog.e("Unexpected empty body response")
+                            ClientError()
+                        } else {
+                            Success(
+                                successResponseBody as T,
+                                response.code{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
+                                response.headers{{#jvm-okhttp3}}(){{/jvm-okhttp3}}.toMultimap()
+                            )
+                        }
+                    }
+                    response.isClientError -> {
+                        ClientError(
+                            response.message{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
+                            responseBody<ErrorBody>(response.body{{#jvm-okhttp3}}(){{/jvm-okhttp3}}, accept),
+                            response.code{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
+                            response.headers{{#jvm-okhttp3}}(){{/jvm-okhttp3}}.toMultimap()
+                        )
+                    }
+                    else -> {
+                        ServerError(
+                            response.message{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
+                            responseBody<ErrorBody>(response.body{{#jvm-okhttp3}}(){{/jvm-okhttp3}}, accept),
+                            response.code{{#jvm-okhttp3}}(){{/jvm-okhttp3}},
+                            response.headers{{#jvm-okhttp3}}(){{/jvm-okhttp3}}.toMultimap()
+                        )
+                    }
+                })
+            }
+        })
     }
 
     protected fun parameterToString(value: Any?): String = when (value) {
         null -> ""
         is Array<*> -> toMultiValue(value, "csv").toString()
         is Iterable<*> -> toMultiValue(value, "csv").toString()
-        is OffsetDateTime, is OffsetTime, is LocalDateTime, is LocalDate, is LocalTime ->
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+            when (value) {
+                is OffsetDateTime, is OffsetTime, is LocalDateTime, is LocalDate, is LocalTime ->
             parseDateToQueryString(value)
+                else -> value.toString()
+            }
+        }
         else -> value.toString()
     }
 
@@ -449,3 +459,4 @@ import com.squareup.moshi.adapter
         {{/toJson}}
     }
 }
+

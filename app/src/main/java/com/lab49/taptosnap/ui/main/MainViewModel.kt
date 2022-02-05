@@ -8,5 +8,6 @@ import androidx.lifecycle.ViewModel
  * Tap To Snap
  */
 class MainViewModel: ViewModel() {
-    val items = arrayListOf<Any>()
+    var items = arrayListOf<ItemAndState>()
+    var loadingItems = true
 }

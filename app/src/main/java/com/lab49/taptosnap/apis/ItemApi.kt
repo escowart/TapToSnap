@@ -40,7 +40,7 @@ import com.lab49.taptosnap.infrastructure.ResponseType
 import com.lab49.taptosnap.infrastructure.Success
 import com.lab49.taptosnap.infrastructure.toMultiValue
 
-class ItemApi(basePath: kotlin.String = defaultBasePath) : ApiClient(basePath) {
+class ItemApi(runOnUiThread: (f: () -> Unit) -> Unit, basePath: kotlin.String = defaultBasePath) : ApiClient(runOnUiThread, basePath) {
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
@@ -54,67 +54,25 @@ class ItemApi(basePath: kotlin.String = defaultBasePath) : ApiClient(basePath) {
     * @return kotlin.Array<Item>
     * @throws IllegalStateException If the request is not correctly configured
     * @throws IOException Rethrows the OkHttp execute method exception
-    * @throws UnsupportedOperationException If the API returns an informational or redirection response
-    * @throws ClientException If the API returns a client error response
-    * @throws ServerException If the API returns a server error response
     */
-    @Suppress("UNCHECKED_CAST")
-    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    fun getItems() : kotlin.Array<Item> {
-        val localVarResponse = getItemsWithHttpInfo()
-
-        return when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as kotlin.Array<Item>
-            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
-            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
-            ResponseType.ClientError -> {
-                val localVarError = localVarResponse as ClientError<*>
-                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-            ResponseType.ServerError -> {
-                val localVarError = localVarResponse as ServerError<*>
-                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-        }
-    }
-
-    /**
-    * Get the list of items
-    * Get the list of items
-    * @return ApiResponse<kotlin.Array<Item>?>
-    * @throws IllegalStateException If the request is not correctly configured
-    * @throws IOException Rethrows the OkHttp execute method exception
-    */
-    @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    fun getItemsWithHttpInfo() : ApiResponse<kotlin.Array<Item>?> {
-        val localVariableConfig = getItemsRequestConfig()
+    fun getItems(
+        callback: (response: ApiResponse<kotlin.Array<Item>>) -> Unit
+    ) {
+        val body = null
+        val query: MultiValueMap = mutableMapOf()
+        val headers: MutableMap<String, String> = mutableMapOf()
+        headers["Accept"] = "application/json"
 
-        return request<Unit, kotlin.Array<Item>>(
-            localVariableConfig
-        )
-    }
-
-    /**
-    * To obtain the request config of the operation getItems
-    *
-    * @return RequestConfig
-    */
-    fun getItemsRequestConfig() : RequestConfig<Unit> {
-        val localVariableBody = null
-        val localVariableQuery: MultiValueMap = mutableMapOf()
-        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        localVariableHeaders["Accept"] = "application/json"
-
-        return RequestConfig(
+        val config = RequestConfig<Unit>(
             method = RequestMethod.GET,
             path = "/item/list",
-            query = localVariableQuery,
-            headers = localVariableHeaders,
-            body = localVariableBody
+            query = query,
+            headers = headers,
+            body = body
         )
+         request(config, callback)
     }
-
     /**
     * Upload image for the given item
     * Upload image for the given item
@@ -123,69 +81,24 @@ class ItemApi(basePath: kotlin.String = defaultBasePath) : ApiClient(basePath) {
     * @return UploadImageResponse
     * @throws IllegalStateException If the request is not correctly configured
     * @throws IOException Rethrows the OkHttp execute method exception
-    * @throws UnsupportedOperationException If the API returns an informational or redirection response
-    * @throws ClientException If the API returns a client error response
-    * @throws ServerException If the API returns a server error response
-    */
-    @Suppress("UNCHECKED_CAST")
-    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    fun uploadImage(imageLabel: kotlin.String, image: java.io.File) : UploadImageResponse {
-        val localVarResponse = uploadImageWithHttpInfo(imageLabel = imageLabel, image = image)
-
-        return when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as UploadImageResponse
-            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
-            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
-            ResponseType.ClientError -> {
-                val localVarError = localVarResponse as ClientError<*>
-                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-            ResponseType.ServerError -> {
-                val localVarError = localVarResponse as ServerError<*>
-                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
-            }
-        }
-    }
-
-    /**
-    * Upload image for the given item
-    * Upload image for the given item
-    * @param imageLabel  
-    * @param image  
-    * @return ApiResponse<UploadImageResponse?>
-    * @throws IllegalStateException If the request is not correctly configured
-    * @throws IOException Rethrows the OkHttp execute method exception
     */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    fun uploadImageWithHttpInfo(imageLabel: kotlin.String, image: java.io.File) : ApiResponse<UploadImageResponse?> {
-        val localVariableConfig = uploadImageRequestConfig(imageLabel = imageLabel, image = image)
+    fun uploadImage(imageLabel: kotlin.String, image: java.io.File, 
+        callback: (response: ApiResponse<UploadImageResponse>) -> Unit
+    ) {
+        val body = mapOf("imageLabel" to imageLabel, "image" to image)
+        val query: MultiValueMap = mutableMapOf()
+        val headers: MutableMap<String, String> = mutableMapOf("Content-Type" to "multipart/form-data")
+        headers["Accept"] = "application/json"
 
-        return request<Map<String, Any?>, UploadImageResponse>(
-            localVariableConfig
-        )
-    }
-
-    /**
-    * To obtain the request config of the operation uploadImage
-    *
-    * @param imageLabel  
-    * @param image  
-    * @return RequestConfig
-    */
-    fun uploadImageRequestConfig(imageLabel: kotlin.String, image: java.io.File) : RequestConfig<Map<String, Any?>> {
-        val localVariableBody = mapOf("imageLabel" to imageLabel, "image" to image)
-        val localVariableQuery: MultiValueMap = mutableMapOf()
-        val localVariableHeaders: MutableMap<String, String> = mutableMapOf("Content-Type" to "multipart/form-data")
-        localVariableHeaders["Accept"] = "application/json"
-
-        return RequestConfig(
+        val config = RequestConfig<Map<String, Any?>>(
             method = RequestMethod.POST,
             path = "/item/image",
-            query = localVariableQuery,
-            headers = localVariableHeaders,
-            body = localVariableBody
+            query = query,
+            headers = headers,
+            body = body
         )
+         request(config, callback)
     }
-
 }

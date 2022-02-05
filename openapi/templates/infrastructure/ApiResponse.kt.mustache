@@ -1,44 +1,44 @@
-package com.lab49.taptosnap.infrastructure
+package {{packageName}}.infrastructure
 
 import com.squareup.moshi.Json
 import java.io.Serializable
 
-enum class ResponseType {
+{{#nonPublicApi}}internal {{/nonPublicApi}}enum class ResponseType {
     Success, Informational, Redirection, ClientError, ServerError
 }
 
-interface Response
+{{#nonPublicApi}}internal {{/nonPublicApi}}interface Response
 
-abstract class ApiResponse<T>(val responseType: ResponseType): Response {
+{{#nonPublicApi}}internal {{/nonPublicApi}}abstract class ApiResponse<T>(val responseType: ResponseType): Response {
     abstract val statusCode: Int
     abstract val headers: Map<String,List<String>>
 }
 
-class Success<T>(
-    val data: T,
+{{#nonPublicApi}}internal {{/nonPublicApi}}class Success<T>(
+    val data: T{{#nullableReturnType}}?{{/nullableReturnType}},
     override val statusCode: Int = -1,
     override val headers: Map<String, List<String>> = mapOf()
 ): ApiResponse<T>(ResponseType.Success)
 
-class Informational<T>(
+{{#nonPublicApi}}internal {{/nonPublicApi}}class Informational<T>(
     val statusText: String,
     override val statusCode: Int = -1,
     override val headers: Map<String, List<String>> = mapOf()
 ) : ApiResponse<T>(ResponseType.Informational)
 
-class Redirection<T>(
+{{#nonPublicApi}}internal {{/nonPublicApi}}class Redirection<T>(
     override val statusCode: Int = -1,
     override val headers: Map<String, List<String>> = mapOf()
 ) : ApiResponse<T>(ResponseType.Redirection)
 
-class ClientError<T>(
+{{#nonPublicApi}}internal {{/nonPublicApi}}class ClientError<T>(
     val message: String? = null,
     val body: ErrorBody? = null,
     override val statusCode: Int = -1,
     override val headers: Map<String, List<String>> = mapOf()
 ) : ApiResponse<T>(ResponseType.ClientError)
 
-class ServerError<T>(
+{{#nonPublicApi}}internal {{/nonPublicApi}}class ServerError<T>(
     val message: String? = null,
     val body: ErrorBody? = null,
     override val statusCode: Int = -1,

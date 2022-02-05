@@ -1,5 +1,6 @@
 package com.lab49.taptosnap.infrastructure
 
+import com.lab49.taptosnap.util.DebugLog
 import android.os.Build
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
@@ -29,7 +30,7 @@ import java.time.OffsetTime
 import java.util.Locale
 import com.squareup.moshi.adapter
 
-open class ApiClient(val baseUrl: String) {
+open class ApiClient(val runOnUiThread: (f: () -> Unit) -> Unit, val baseUrl: String) {
     companion object {
         protected const val ContentType = "Content-Type"
         protected const val Accept = "Accept"
@@ -150,7 +151,7 @@ open class ApiClient(val baseUrl: String) {
     }
 
 
-    protected inline fun <reified I, reified T: Any?> request(requestConfig: RequestConfig<I>): ApiResponse<T?> {
+    protected inline fun <reified I, reified T: Any?> request(requestConfig: RequestConfig<I>, crossinline callback: (ApiResponse<T>) -> Unit) {
         val httpUrl = baseUrl.toHttpUrlOrNull() ?: throw IllegalStateException("baseUrl is invalid.")
 
         val url = httpUrl.newBuilder()
@@ -182,60 +183,85 @@ open class ApiClient(val baseUrl: String) {
 
         // TODO: support multiple contentType options here.
         val contentType = (headers[ContentType] as String).substringBefore(";").lowercase(Locale.getDefault())
-
-        val request = when (requestConfig.method) {
-            RequestMethod.DELETE -> Request.Builder().url(url).delete(requestBody(requestConfig.body, contentType))
-            RequestMethod.GET -> Request.Builder().url(url)
-            RequestMethod.HEAD -> Request.Builder().url(url).head()
-            RequestMethod.PATCH -> Request.Builder().url(url).patch(requestBody(requestConfig.body, contentType))
-            RequestMethod.PUT -> Request.Builder().url(url).put(requestBody(requestConfig.body, contentType))
-            RequestMethod.POST -> Request.Builder().url(url).post(requestBody(requestConfig.body, contentType))
-            RequestMethod.OPTIONS -> Request.Builder().url(url).method("OPTIONS", null)
-        }.apply {
-            headers.forEach { header -> addHeader(header.key, header.value) }
-        }.build()
-
-        val response = client.newCall(request).execute()
-
-        val accept = response.header(ContentType)?.substringBefore(";")?.lowercase(Locale.getDefault())
-
-        // TODO: handle specific mapping types. e.g. Map<int, Class<?>>
-        return when {
-            response.isRedirect -> Redirection(
-                response.code,
-                response.headers.toMultimap()
-            )
-            response.isInformational -> Informational(
-                response.message,
-                response.code,
-                response.headers.toMultimap()
-            )
-            response.isSuccessful -> Success(
-                responseBody(response.body, accept),
-                response.code,
-                response.headers.toMultimap()
-            )
-            response.isClientError -> ClientError(
-                response.message,
-                response.body?.string(),
-                response.code,
-                response.headers.toMultimap()
-            )
-            else -> ServerError(
-                response.message,
-                response.body?.string(),
-                response.code,
-                response.headers.toMultimap()
-            )
+        val requestBody = when (requestConfig.method) {
+            RequestMethod.GET, RequestMethod.HEAD -> null
+            else -> requestBody(requestConfig.body, contentType)
         }
+        val request = Request.Builder()
+            .url(url)
+            .method(requestConfig.method.name, requestBody)
+            .apply { headers.forEach { header -> addHeader(header.key, header.value) } }
+            .build()
+
+        val uiThreadCallback = { res: ApiResponse<T> -> runOnUiThread { callback(res) } }
+        val call = client.newCall(request)
+        call.enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                DebugLog.e(e)
+                uiThreadCallback(ClientError<T>())
+            }
+            override fun onResponse(call: Call, response: Response) {
+                val accept = response.header(ContentType)?.substringBefore(";")?.lowercase(Locale.getDefault())
+                // TODO: handle specific mapping types. e.g. Map<int, Class<?>>
+                uiThreadCallback(when {
+                    response.isRedirect -> {
+                        Redirection(
+                            response.code,
+                            response.headers.toMultimap()
+                        )
+                    }
+                    response.isInformational -> {
+                        Informational(
+                            response.message,
+                            response.code,
+                            response.headers.toMultimap()
+                        )
+                    }
+                    response.isSuccessful -> {
+                        val successResponseBody = responseBody<T>(response.body, accept)
+                        if (successResponseBody == null && null !is T) {
+                            DebugLog.e("Unexpected empty body response")
+                            ClientError()
+                        } else {
+                            Success(
+                                successResponseBody as T,
+                                response.code,
+                                response.headers.toMultimap()
+                            )
+                        }
+                    }
+                    response.isClientError -> {
+                        ClientError(
+                            response.message,
+                            responseBody<ErrorBody>(response.body, accept),
+                            response.code,
+                            response.headers.toMultimap()
+                        )
+                    }
+                    else -> {
+                        ServerError(
+                            response.message,
+                            responseBody<ErrorBody>(response.body, accept),
+                            response.code,
+                            response.headers.toMultimap()
+                        )
+                    }
+                })
+            }
+        })
     }
 
     protected fun parameterToString(value: Any?): String = when (value) {
         null -> ""
         is Array<*> -> toMultiValue(value, "csv").toString()
         is Iterable<*> -> toMultiValue(value, "csv").toString()
-        is OffsetDateTime, is OffsetTime, is LocalDateTime, is LocalDate, is LocalTime ->
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+            when (value) {
+                is OffsetDateTime, is OffsetTime, is LocalDateTime, is LocalDate, is LocalTime ->
             parseDateToQueryString(value)
+                else -> value.toString()
+            }
+        }
         else -> value.toString()
     }
 
@@ -249,3 +275,4 @@ open class ApiClient(val baseUrl: String) {
         return Serializer.moshi.adapter(T::class.java).toJson(value).replace("\"", "")
     }
 }
+
