@@ -7,7 +7,7 @@ import androidx.viewbinding.ViewBinding
 
 /**
  * Created by Edwin S. Cowart on 05 February, 2022
- * Lab49 Take Home
+ * Lab49 Take-Home
  * Tap To Snap
  */
 fun <Binding : ViewBinding, Item> RecyclerView.newAdapter(
