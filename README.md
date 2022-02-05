@@ -14,14 +14,14 @@ Take photos of items mentioned on each tile to win the game!
 
 ## Scripts
 
-### Setup
+### Setup Scripts
 
 1. Install [Python3](https://www.python.org/downloads/)
 2. Install [Pycharm](https://www.jetbrains.com/pycharm/download/#section=mac)
 3. Open [scripts](scripts) as a project in Pycharm to avoid collisions with Android Studio
 
 
-### [Import Images](scripts/import-images.py)
+### Script: [Import Images](scripts/import-images.py)
 
 Import images with multiple in the Android project's resource.
 Script expects images as camcelCased PNGs with a size multiplier.
