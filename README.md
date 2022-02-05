@@ -27,14 +27,16 @@ Take photos of items mentioned on each tile to win the game!
 Import images with multiple in the Android project's resource.
 Script expects images as camcelCased PNGs with a size multiplier.
 
+Examples:
+
+* sourceDirectory
+    * imageName.png
+    * imageName@2x.png
+    * imageName@3x.png
+
+
 Usage:
 ```
     >   python3 ./scripts/input-images.py [Source Directory]
 ```
 
-
-Examples:
-
-    - imageName.png
-    - imageName@2x.png
-    - imageName@3x.png
