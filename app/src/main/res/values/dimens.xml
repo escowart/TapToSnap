@@ -5,7 +5,7 @@
     <dimen name="main_horizontal_margin">20dp</dimen>
     <dimen name="tap_to_snap_top_margin">76dp</dimen>
     <dimen name="tiles_top_margin">138dp</dimen>
-    <dimen name="tiles_margin">15dp</dimen>
+    <dimen name="tile_inner_spacing">15dp</dimen>
     <dimen name="tile_height">263dp</dimen>
     <dimen name="tile_text_height">54dp</dimen>
     <dimen name="large_font_size">48sp</dimen>

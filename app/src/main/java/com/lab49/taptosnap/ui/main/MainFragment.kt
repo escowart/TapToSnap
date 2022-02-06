@@ -1,21 +1,21 @@
 package com.lab49.taptosnap.ui.main
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.lab49.taptosnap.R
 import com.lab49.taptosnap.apis.ItemApi
 import com.lab49.taptosnap.databinding.FragmentMainBinding
 import com.lab49.taptosnap.databinding.TileImageBinding
 import com.lab49.taptosnap.infrastructure.Success
-import com.lab49.taptosnap.models.Item
 import com.lab49.taptosnap.models.ItemState
 import com.lab49.taptosnap.models.ItemWithState
 import com.lab49.taptosnap.ui.BaseFragment
-import com.lab49.taptosnap.ui.view.newAdapter
+import com.lab49.taptosnap.ui.recycler.SpacingItemDecorationOptions
+import com.lab49.taptosnap.ui.recycler.setup
 import com.lab49.taptosnap.util.DebugLog
 import java.io.File
 
@@ -37,7 +37,15 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
         items = MainFragmentArgs.fromBundle(requireArguments()).items.items.map {
             ItemWithState(it)
         }
-        binding.tileRecyclerView.newAdapter(items, TileImageBinding::inflate) { binding, item ->
+        binding.tileRecyclerView.setup(
+            items = items,
+            inflate = TileImageBinding::inflate,
+            orientation = RecyclerView.VERTICAL,
+            spanCount = 2,
+            spacing = SpacingItemDecorationOptions(
+                innerMargin = R.dimen.tile_inner_spacing
+            )
+        ) { binding, item ->
             binding.tileText.text = item.name
             binding.root.setOnClickListener {
                 if (item.state !in arrayOf(ItemState.Success, ItemState.Verifying)) return@setOnClickListener

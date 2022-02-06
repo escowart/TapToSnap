@@ -1,8 +1,10 @@
-package com.lab49.taptosnap.ui.view
+package com.lab49.taptosnap.ui.recycler
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewbinding.ViewBinding
 
 /**
@@ -11,11 +13,15 @@ import androidx.viewbinding.ViewBinding
  * Tap To Snap
  * TODO add support for a multiple viewType binding adapter
  */
-fun <Binding : ViewBinding, Item> RecyclerView.newAdapter(
+fun <Binding : ViewBinding, Item> RecyclerView.setup(
     items: List<Item>,
     inflate: (inflater: LayoutInflater, parent: ViewGroup?, attachToParent: Boolean) -> Binding,
+    @RecyclerView.Orientation orientation: Int,
+    spanCount: Int,
+    spacing: SpacingItemDecorationOptions? = null,
     bind: (binding: Binding, item: Item) -> Unit
 ) {
+
     adapter = object : RecyclerView.Adapter<BindingViewHolder<Binding>>() {
         override fun getItemCount(): Int = items.size
         override fun onCreateViewHolder(
@@ -28,6 +34,13 @@ fun <Binding : ViewBinding, Item> RecyclerView.newAdapter(
         override fun onBindViewHolder(holder: BindingViewHolder<Binding>, position: Int) {
             bind(holder.binding, items[position])
         }
+    }
+    layoutManager = when (spanCount) {
+        1 -> LinearLayoutManager(context, orientation, false)
+        else -> StaggeredGridLayoutManager(spanCount, orientation)
+    }
+    spacing?.let {
+        addItemDecoration(SpacingItemDecoration(orientation, spanCount, spacing))
     }
 }
 
