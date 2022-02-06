@@ -11,6 +11,9 @@ import com.lab49.taptosnap.apis.ItemApi
 import com.lab49.taptosnap.databinding.FragmentMainBinding
 import com.lab49.taptosnap.databinding.TileImageBinding
 import com.lab49.taptosnap.infrastructure.Success
+import com.lab49.taptosnap.models.Item
+import com.lab49.taptosnap.models.ItemState
+import com.lab49.taptosnap.models.ItemWithState
 import com.lab49.taptosnap.ui.BaseFragment
 import com.lab49.taptosnap.ui.view.newAdapter
 import com.lab49.taptosnap.util.DebugLog
@@ -24,17 +27,23 @@ import java.io.File
 class MainFragment : BaseFragment<FragmentMainBinding>() {
     private lateinit var itemApi: ItemApi
 
+    private lateinit var items: List<ItemWithState>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
-        itemApi = ItemApi(requireActivity()::runOnUiThread)
+        items = MainFragmentArgs.fromBundle(requireArguments()).items.items.map {
+            ItemWithState(it)
+        }
+        binding.tileRecyclerView.newAdapter(items, TileImageBinding::inflate) { binding, item ->
+            binding.tileText.text = item.name
+            binding.root.setOnClickListener {
+                if (item.state !in arrayOf(ItemState.Success, ItemState.Verifying)) return@setOnClickListener
 
-//        binding.tileRecyclerView.newAdapter(items, TileImageBinding::inflate) { binding, item ->
-//            // TODO
-//        }
+            }
+        }
         binding.tileRecyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
         return binding.root

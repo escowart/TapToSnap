@@ -32,9 +32,9 @@ find $APP/apis -type f \
     ! -name 'Apis.kt' \
     -delete
 find $APP/models -type f \
-    ! -name 'ItemsAndStates.kt' \
-    ! -name 'ItemAndState.kt' \
+    ! -name 'Items.kt' \
     ! -name 'ItemState.kt' \
+    ! -name 'ItemWithState.kt' \
     -delete
 rm -rf $APP/infrastructure
 rm -rf docs

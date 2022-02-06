@@ -12,7 +12,7 @@ import androidx.viewbinding.ViewBinding
  * TODO add support for a multiple viewType binding adapter
  */
 fun <Binding : ViewBinding, Item> RecyclerView.newAdapter(
-    items: ArrayList<Item>,
+    items: List<Item>,
     inflate: (inflater: LayoutInflater, parent: ViewGroup?, attachToParent: Boolean) -> Binding,
     bind: (binding: Binding, item: Item) -> Unit
 ) {

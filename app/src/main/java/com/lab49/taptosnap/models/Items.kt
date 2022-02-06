@@ -7,6 +7,6 @@ import java.io.Serializable
  * Lab49 Take-Home
  * Tap To Snap
  */
-data class ItemsAndStates(
-    val items: List<ItemAndState>
+data class Items(
+    val items: Array<Item>
 ): Serializable

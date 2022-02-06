@@ -29,6 +29,6 @@
         tools:layout="@layout/fragment_main">
         <argument
             android:name="items"
-            app:argType="com.lab49.taptosnap.models.ItemsAndStates"/>
+            app:argType="com.lab49.taptosnap.models.Items"/>
     </fragment>
 </navigation>

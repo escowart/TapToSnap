@@ -1,6 +1,5 @@
 package com.lab49.taptosnap.ui.landing
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +8,7 @@ import com.lab49.taptosnap.apis.itemApi
 import com.lab49.taptosnap.databinding.FragmentLandingBinding
 import com.lab49.taptosnap.infrastructure.Success
 import com.lab49.taptosnap.ui.BaseFragment
-import com.lab49.taptosnap.models.ItemAndState
-import com.lab49.taptosnap.models.ItemsAndStates
+import com.lab49.taptosnap.models.Items
 import com.lab49.taptosnap.util.DebugLog
 
 /**
@@ -35,11 +33,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 return@getItems
             }
             when (it) {
-                is Success -> navigate(
-                    LandingFragmentDirections.toMainFragment(
-                        ItemsAndStates(it.data.map { item -> ItemAndState(item) })
-                    )
-                )
+                is Success -> navigate(LandingFragmentDirections.toMainFragment(Items(it.data)))
                 else -> errorDialog(response = it, retry = { getItemsRequest() })
             }
         }
