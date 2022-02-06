@@ -44,7 +44,7 @@ class ItemApi(runOnUiThread: (Runnable) -> Unit, basePath: kotlin.String = defau
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "http://localhost")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "https://taptosnap.nonprod.kube.lab49cloud.com/v1")
         }
     }
 

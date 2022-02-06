@@ -1,6 +1,6 @@
 # ItemApi
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *https://taptosnap.nonprod.kube.lab49cloud.com/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

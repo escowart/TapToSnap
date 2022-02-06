@@ -4,7 +4,8 @@ info:
   title: Tap To Snap API
 tags:
   - name: item
-
+servers:
+  - url: https://taptosnap.nonprod.kube.lab49cloud.com/v1
 paths:
   /item/list:
     $ref: "item.yaml#/paths/~1item~1list"
