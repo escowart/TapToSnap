@@ -3,18 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/MainFragment">
-
-    <fragment
-        android:id="@+id/MainFragment"
-        android:name="com.lab49.taptosnap.ui.main.MainFragment"
-        android:label="Main"
-        tools:layout="@layout/fragment_main">
-
-        <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/LandingFragment" />
-    </fragment>
+    app:startDestination="@id/LandingFragment">
     <fragment
         android:id="@+id/LandingFragment"
         android:name="com.lab49.taptosnap.ui.landing.LandingFragment"
@@ -22,7 +11,7 @@
         tools:layout="@layout/fragment_landing">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            android:id="@+id/toMainFragment"
             app:destination="@id/MainFragment"
             app:popUpTo="@id/LandingFragment"
             app:popUpToInclusive="true"
@@ -31,5 +20,15 @@
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right"
             />
+    </fragment>
+
+    <fragment
+        android:id="@+id/MainFragment"
+        android:name="com.lab49.taptosnap.ui.main.MainFragment"
+        android:label="Main"
+        tools:layout="@layout/fragment_main">
+        <argument
+            android:name="items"
+            app:argType="com.lab49.taptosnap.models.ItemsAndStates"/>
     </fragment>
 </navigation>

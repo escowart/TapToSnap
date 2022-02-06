@@ -1,8 +1,8 @@
 <resources>
-    <dimen name="app_horizontal_margin">20dp</dimen>
     <dimen name="landing_top_margin">175dp</dimen>
-    <dimen name="landing_bottom_margin">83dp</dimen>
-    <dimen name="landing_horizontal_margin">10dp</dimen>
+    <dimen name="bottom_margin">83dp</dimen>
+    <dimen name="landing_horizontal_margin">30dp</dimen>
+    <dimen name="main_horizontal_margin">20dp</dimen>
     <dimen name="tap_to_snap_top_margin">76dp</dimen>
     <dimen name="tiles_top_margin">138dp</dimen>
     <dimen name="tiles_margin">15dp</dimen>

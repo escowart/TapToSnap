@@ -10,6 +10,7 @@ import com.lab49.taptosnap.databinding.FragmentLandingBinding
 import com.lab49.taptosnap.infrastructure.Success
 import com.lab49.taptosnap.ui.BaseFragment
 import com.lab49.taptosnap.models.ItemAndState
+import com.lab49.taptosnap.models.ItemsAndStates
 import com.lab49.taptosnap.util.DebugLog
 
 /**
@@ -26,7 +27,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         return binding.root
     }
-    @SuppressLint("NotifyDataSetChanged")
+
     private fun getItemsRequest() {
         itemApi.getItems {
             if (!isSafe) {
@@ -34,9 +35,11 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 return@getItems
             }
             when (it) {
-                is Success -> {
-                    it.data.map { item -> ItemAndState(item) }
-                }
+                is Success -> navigate(
+                    LandingFragmentDirections.toMainFragment(
+                        ItemsAndStates(it.data.map { item -> ItemAndState(item) })
+                    )
+                )
                 else -> errorDialog(response = it, retry = { getItemsRequest() })
             }
         }
