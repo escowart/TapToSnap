@@ -36,6 +36,7 @@ def is_image_file(filepath: str) -> bool:
 
 def get_destination_directory(source_filename: str) -> Optional[str]:
     match = re.search(size_multiplier_regex, source_filename)
+    # TODO - This can be optimized with a integer multiplier -> android size hash map
     size_multiplier = (
         float(match.groups()[0])
         if match and len(match.groups()) == 1
