@@ -24,7 +24,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLandingBinding.inflate(inflater, container, false)
-
+        binding.letsGoButon.setOnClickListener { getItemsRequest() }
         return binding.root
     }
 

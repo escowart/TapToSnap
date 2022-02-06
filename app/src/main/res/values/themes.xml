@@ -10,7 +10,7 @@
         <item name="colorSecondaryVariant">@color/pink_dark</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
         <item name="android:windowBackground">@drawable/splash</item>
         <!-- Customize your theme here. -->
     </style>
@@ -23,4 +23,35 @@
     <style name="Theme.TapToSnap.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.TapToSnap.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Theme.TapToSnap.Text.F1" parent="@android:style/TextAppearance.Large" >
+        <item name="android:fontFamily">@font/karla_regular</item>
+        <item name="android:textSize">@dimen/large_font_size</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Theme.TapToSnap.Text.F2" parent="@android:style/TextAppearance.Medium" >
+        <item name="android:fontFamily">@font/karla_bold</item>
+        <item name="android:textSize">@dimen/medium_font_size</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Theme.TapToSnap.Text.F3" parent="@android:style/TextAppearance.Small" >
+        <item name="android:fontFamily">@font/karla_regular</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Theme.TapToSnap.Text.F4" parent="@android:style/TextAppearance.Small" >
+        <item name="android:fontFamily">@font/karla_bold</item>
+        <item name="android:textSize">@dimen/extra_small_font_size</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Theme.TapToSnap.Button" parent="@style/Widget.AppCompat.Button" >
+        <item name="android:fontFamily">@font/karla_bold</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/button_pink</item>
+    </style>
 </resources>

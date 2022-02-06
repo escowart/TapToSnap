@@ -8,4 +8,11 @@
     <dimen name="tiles_margin">15dp</dimen>
     <dimen name="tile_height">263dp</dimen>
     <dimen name="tile_text_height">54dp</dimen>
+    <dimen name="large_font_size">48sp</dimen>
+    <dimen name="medium_font_size">28sp</dimen>
+    <dimen name="small_font_size">24sp</dimen>
+    <dimen name="extra_small_font_size">14sp</dimen>
+    <dimen name="button_margin">0dp</dimen>
+    <dimen name="button_corner_radius">8dp</dimen>
+    <dimen name="tile_corner_radius">14dp</dimen>
 </resources>

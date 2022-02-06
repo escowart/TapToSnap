@@ -18,10 +18,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/letsGoButon"
         android:text="@string/lets_go"
-        android:layout_width="wrap_content"
+        style="@style/Theme.TapToSnap.Button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/bottom_margin"
         app:layout_constraintBottom_toBottomOf="parent"
