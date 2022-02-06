@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.lab49.taptosnap.apis.ItemApi
 import com.lab49.taptosnap.databinding.FragmentMainBinding
 import com.lab49.taptosnap.databinding.TileImageBinding
@@ -36,6 +37,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
         binding.tileRecyclerView.newAdapter(model.items, TileImageBinding::inflate) { binding, item ->
             // TODO
         }
+        binding.tileRecyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
         return binding.root
     }
