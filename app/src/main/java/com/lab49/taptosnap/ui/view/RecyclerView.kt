@@ -9,6 +9,7 @@ import androidx.viewbinding.ViewBinding
  * Created by Edwin S. Cowart on 05 February, 2022
  * Lab49 Take-Home
  * Tap To Snap
+ * TODO add support for a multiple viewType binding adapter
  */
 fun <Binding : ViewBinding, Item> RecyclerView.newAdapter(
     items: ArrayList<Item>,
@@ -31,3 +32,4 @@ fun <Binding : ViewBinding, Item> RecyclerView.newAdapter(
 }
 
 class BindingViewHolder<Binding : ViewBinding>(val binding: Binding) : RecyclerView.ViewHolder(binding.root)
+
