@@ -1,6 +1,4 @@
-package com.lab49.taptosnap.ui.main
-
-import com.lab49.taptosnap.models.Item
+package com.lab49.taptosnap.models
 
 /**
  * Created by Edwin S. Cowart on 05 February, 2022

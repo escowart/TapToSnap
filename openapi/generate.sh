@@ -25,6 +25,20 @@ fi
 
 cd $(dirname "$0")/..
 
+
+# Delete generated code before regenerating
+APP=app/src/main/java/com/lab49/taptosnap
+find $APP/apis -type f \
+    ! -name 'Apis.kt' \
+    -delete
+find $APP/models -type f \
+    ! -name 'ItemAndState.kt' \
+    ! -name 'ItemState.kt' \
+    -delete
+rm -rf $APP/infrastructure
+rm -rf docs
+
+
 OPENAPI_GENERATOR_VERSION=5.4.0 $OpenAPIGeneratorCLI generate \
   -i openapi/specification/specification.yaml \
   -g kotlin \

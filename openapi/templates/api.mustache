@@ -45,7 +45,7 @@ import {{packageName}}.infrastructure.Success
 import {{packageName}}.infrastructure.toMultiValue
 
 {{#operations}}
-{{#nonPublicApi}}internal {{/nonPublicApi}}class {{classname}}(runOnUiThread: (f: () -> Unit) -> Unit, basePath: kotlin.String = defaultBasePath) : ApiClient(runOnUiThread, basePath) {
+{{#nonPublicApi}}internal {{/nonPublicApi}}class {{classname}}(runOnUiThread: (Runnable) -> Unit, basePath: kotlin.String = defaultBasePath) : ApiClient(runOnUiThread, basePath) {
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {

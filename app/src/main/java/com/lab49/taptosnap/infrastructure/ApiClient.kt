@@ -30,7 +30,7 @@ import java.time.OffsetTime
 import java.util.Locale
 import com.squareup.moshi.adapter
 
-open class ApiClient(val runOnUiThread: (f: () -> Unit) -> Unit, val baseUrl: String) {
+open class ApiClient(val runOnUiThread: (Runnable) -> Unit, val baseUrl: String) {
     companion object {
         protected const val ContentType = "Content-Type"
         protected const val Accept = "Accept"

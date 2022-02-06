@@ -40,7 +40,7 @@ import com.lab49.taptosnap.infrastructure.ResponseType
 import com.lab49.taptosnap.infrastructure.Success
 import com.lab49.taptosnap.infrastructure.toMultiValue
 
-class ItemApi(runOnUiThread: (f: () -> Unit) -> Unit, basePath: kotlin.String = defaultBasePath) : ApiClient(runOnUiThread, basePath) {
+class ItemApi(runOnUiThread: (Runnable) -> Unit, basePath: kotlin.String = defaultBasePath) : ApiClient(runOnUiThread, basePath) {
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
@@ -82,7 +82,6 @@ class ItemApi(runOnUiThread: (f: () -> Unit) -> Unit, basePath: kotlin.String = 
     * @throws IllegalStateException If the request is not correctly configured
     * @throws IOException Rethrows the OkHttp execute method exception
     */
-    @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
     fun uploadImage(imageLabel: kotlin.String, image: java.io.File, 
         callback: (response: ApiResponse<UploadImageResponse>) -> Unit

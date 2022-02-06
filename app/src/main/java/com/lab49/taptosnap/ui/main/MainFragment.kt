@@ -22,43 +22,22 @@ import java.io.File
  * Tap To Snap
  */
 class MainFragment : BaseFragment<FragmentMainBinding>() {
-    private lateinit var model: MainViewModel
     private lateinit var itemApi: ItemApi
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
-        model = ViewModelProvider(this).get(MainViewModel::class.java)
         itemApi = ItemApi(requireActivity()::runOnUiThread)
-        getItemsRequest()
 
-        binding.tileRecyclerView.newAdapter(model.items, TileImageBinding::inflate) { binding, item ->
-            // TODO
-        }
+//        binding.tileRecyclerView.newAdapter(items, TileImageBinding::inflate) { binding, item ->
+//            // TODO
+//        }
         binding.tileRecyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
         return binding.root
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun getItemsRequest() {
-        itemApi.getItems {
-            if (!isSafe) {
-                DebugLog.e("Cannot execute fetchItems callback while unsafe")
-                return@getItems
-            }
-            when (it) {
-                is Success -> {
-                    model.items.clear()
-                    model.items.addAll(it.data.map { item -> ItemAndState(item) })
-                    model.loadingItems = false
-                    binding.tileRecyclerView.adapter?.notifyDataSetChanged()
-                }
-                else -> errorDialog(response = it, retry = { getItemsRequest() })
-            }
-        }
     }
 
     private fun uploadImageRequest(imageLabel: String, image: File) {
