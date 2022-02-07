@@ -1,19 +1,21 @@
 package com.lab49.taptosnap.ui.main
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.lab49.taptosnap.R
-import com.lab49.taptosnap.apis.ItemApi
+import com.lab49.taptosnap.apis.itemApi
 import com.lab49.taptosnap.databinding.FragmentMainBinding
 import com.lab49.taptosnap.databinding.TileImageBinding
 import com.lab49.taptosnap.infrastructure.Success
 import com.lab49.taptosnap.models.ItemState
 import com.lab49.taptosnap.models.ItemWithState
 import com.lab49.taptosnap.ui.BaseFragment
+import com.lab49.taptosnap.ui.components.showErrorDialog
 import com.lab49.taptosnap.ui.recycler.SpacingItemDecorationOptions
 import com.lab49.taptosnap.ui.recycler.setup
 import com.lab49.taptosnap.util.DebugLog
@@ -25,8 +27,7 @@ import java.io.File
  * Tap To Snap
  */
 class MainFragment : BaseFragment<FragmentMainBinding>() {
-    private lateinit var itemApi: ItemApi
-
+    private lateinit var timer: CountDownTimer
     private lateinit var items: List<ItemWithState>
 
     override fun onCreateView(
@@ -34,6 +35,15 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
+        timer = object : CountDownTimer((15 * 60 * 1000).toLong(), 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                //Some code
+            }
+
+            override fun onFinish() {
+
+            }
+        }
         items = MainFragmentArgs.fromBundle(requireArguments()).items.items.map {
             ItemWithState(it)
         }
@@ -60,14 +70,14 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
     private fun uploadImageRequest(imageLabel: String, image: File) {
         itemApi.uploadImage(imageLabel, image) {
             if (!isSafe) {
-                DebugLog.e("Cannot execute uploadImage callback while unsafe")
+                DebugLog.e("Unsafe uploadImage callback")
                 return@uploadImage
             }
             when (it) {
                 is Success -> {
                     it.data.matched
                 }
-                else -> errorDialog(response = it, retry = { uploadImageRequest(imageLabel, image) })
+                else -> showErrorDialog(error = it, retry = { uploadImageRequest(imageLabel, image) })
             }
         }
     }

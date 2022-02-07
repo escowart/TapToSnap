@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    android:layout_width="@dimen/dialog_width"
+    android:orientation="vertical"
+    android:background="@drawable/rectangle_white"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dialog_text_padding"
+        android:gravity="center"
+        android:background="@drawable/rectangle_grey_top"
+        android:text="@string/title"
+        style="@style/Theme.TapToSnap.Text.F2"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/message"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Theme.TapToSnap.Text.F4"
+        android:padding="@dimen/dialog_text_padding"
+        android:layout_marginVertical="@dimen/dialog_text_padding"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:text="@string/description"
+        />
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:id="@+id/buttonLayout"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/message"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginVertical="@dimen/dialog_text_padding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/leftButton"
+            android:text="@string/left"
+            style="@style/Theme.TapToSnap.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dialog_button_padding_horizontal"
+            android:paddingHorizontal="@dimen/dialog_button_padding_horizontal"
+            />
+
+        <Button
+            android:layout_gravity="center"
+            android:id="@+id/rightButton"
+            android:text="@string/right"
+            style="@style/Theme.TapToSnap.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dialog_button_padding_horizontal"
+            android:paddingHorizontal="@dimen/dialog_button_padding_horizontal"
+            />
+    </LinearLayout>
+
+
+</LinearLayout>

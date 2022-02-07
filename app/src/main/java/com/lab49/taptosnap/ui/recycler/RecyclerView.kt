@@ -19,7 +19,7 @@ fun <Binding : ViewBinding, Item> RecyclerView.setup(
     @RecyclerView.Orientation orientation: Int,
     spanCount: Int,
     spacing: SpacingItemDecorationOptions? = null,
-    bind: (binding: Binding, item: Item) -> Unit
+    update: (binding: Binding, item: Item) -> Unit
 ) {
 
     adapter = object : RecyclerView.Adapter<BindingViewHolder<Binding>>() {
@@ -32,7 +32,7 @@ fun <Binding : ViewBinding, Item> RecyclerView.setup(
             return BindingViewHolder(inflate(inflater, parent, false))
         }
         override fun onBindViewHolder(holder: BindingViewHolder<Binding>, position: Int) {
-            bind(holder.binding, items[position])
+            update(holder.binding, items[position])
         }
     }
     layoutManager = when (spanCount) {

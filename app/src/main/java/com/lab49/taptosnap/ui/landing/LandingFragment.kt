@@ -9,6 +9,8 @@ import com.lab49.taptosnap.databinding.FragmentLandingBinding
 import com.lab49.taptosnap.infrastructure.Success
 import com.lab49.taptosnap.ui.BaseFragment
 import com.lab49.taptosnap.models.Items
+import com.lab49.taptosnap.ui.components.navigate
+import com.lab49.taptosnap.ui.components.showErrorDialog
 import com.lab49.taptosnap.util.DebugLog
 
 /**
@@ -29,12 +31,12 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     private fun getItemsRequest() {
         itemApi.getItems {
             if (!isSafe) {
-                DebugLog.e("Cannot execute fetchItems callback while unsafe")
+                DebugLog.e("Unsafe getItems callback")
                 return@getItems
             }
             when (it) {
-                is Success -> navigate(LandingFragmentDirections.toMainFragment(Items(it.data)))
-                else -> errorDialog(response = it, retry = { getItemsRequest() })
+//                is Success -> navigate(LandingFragmentDirections.toMainFragment(Items(it.data)))
+                else -> showErrorDialog(error = it, retry = { getItemsRequest() })
             }
         }
     }

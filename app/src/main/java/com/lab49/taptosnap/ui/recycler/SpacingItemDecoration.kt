@@ -21,8 +21,8 @@ class SpacingItemDecorationOptions(
     @DimenRes val innerMarginVertical: Int? = innerMargin,
 )
 class SpacingItemDecoration(
-    @RecyclerView.Orientation val orientation: Int,
-    val spanCount: Int,
+    @RecyclerView.Orientation private val orientation: Int,
+    private val spanCount: Int,
     private val options: SpacingItemDecorationOptions): RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(

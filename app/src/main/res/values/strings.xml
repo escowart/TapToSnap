@@ -2,4 +2,11 @@
     <string name="app_name">Tap To Snap</string>
     <string name="tap_to_snap">Tap to snap</string>
     <string name="lets_go">LET’S GO!</string>
+    <string name="right">Right</string>
+    <string name="left">Left</string>
+    <string name="description">Description</string>
+    <string name="title">Title</string>
+    <string name="error">Error</string>
+    <string name="ok">OK</string>
+    <string name="retry">Retry</string>
 </resources>
