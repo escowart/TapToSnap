@@ -53,7 +53,7 @@ No authorization required
 
 <a name="uploadImage"></a>
 # **uploadImage**
-> UploadImageResponse uploadImage(imageLabel, image)
+> UploadImageResponse uploadImage(uploadImagePayload)
 
 Upload image for the given item
 
@@ -66,10 +66,9 @@ Upload image for the given item
 //import com.lab49.taptosnap.models.*
 
 val apiInstance = ItemApi()
-val imageLabel : kotlin.String = imageLabel_example // kotlin.String | 
-val image : java.io.File = BINARY_DATA_HERE // java.io.File | 
+val uploadImagePayload : UploadImagePayload =  // UploadImagePayload | 
 try {
-    val result : UploadImageResponse = apiInstance.uploadImage(imageLabel, image)
+    val result : UploadImageResponse = apiInstance.uploadImage(uploadImagePayload)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling ItemApi#uploadImage")
@@ -84,8 +83,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **imageLabel** | **kotlin.String**|  |
- **image** | **java.io.File**|  |
+ **uploadImagePayload** | [**UploadImagePayload**](UploadImagePayload.md)|  | [optional]
 
 ### Return type
 
@@ -97,6 +95,6 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: multipart/form-data
+ - **Content-Type**: application/json
  - **Accept**: application/json
 

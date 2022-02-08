@@ -35,7 +35,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 return@getItems
             }
             when (it) {
-//                is Success -> navigate(LandingFragmentDirections.toMainFragment(Items(it.data)))
+                is Success -> navigate(LandingFragmentDirections.toMainFragment(Items(it.data)))
                 else -> showErrorDialog(error = it, retry = { getItemsRequest() })
             }
         }

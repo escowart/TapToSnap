@@ -16,7 +16,9 @@ app/src/main/java/com/lab49/taptosnap/infrastructure/Serializer.kt
 app/src/main/java/com/lab49/taptosnap/infrastructure/URIAdapter.kt
 app/src/main/java/com/lab49/taptosnap/infrastructure/UUIDAdapter.kt
 app/src/main/java/com/lab49/taptosnap/models/Item.kt
+app/src/main/java/com/lab49/taptosnap/models/UploadImagePayload.kt
 app/src/main/java/com/lab49/taptosnap/models/UploadImageResponse.kt
 docs/Item.md
 docs/ItemApi.md
+docs/UploadImagePayload.md
 docs/UploadImageResponse.md

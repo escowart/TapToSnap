@@ -1,6 +1,8 @@
 package com.lab49.taptosnap.infrastructure
 
 import com.lab49.taptosnap.util.DebugLog
+import com.lab49.taptosnap.BuildConfig
+import okhttp3.logging.HttpLoggingInterceptor
 import android.os.Build
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
@@ -49,6 +51,10 @@ open class ApiClient(val runOnUiThread: (Runnable) -> Unit, val baseUrl: String)
 
         @JvmStatic
         val client: OkHttpClient by lazy {
+            val builder = OkHttpClient.Builder()
+            if (BuildConfig.DEBUG) {
+                builder.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            }
             builder.build()
         }
 

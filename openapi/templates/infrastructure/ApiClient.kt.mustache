@@ -1,6 +1,8 @@
 package {{packageName}}.infrastructure
 
 import {{packageName}}.util.DebugLog
+import {{packageName}}.BuildConfig
+import okhttp3.logging.HttpLoggingInterceptor
 {{#supportAndroidApiLevel25AndBelow}}
 import android.os.Build
 {{/supportAndroidApiLevel25AndBelow}}
@@ -94,6 +96,10 @@ import com.squareup.moshi.adapter
 
         @JvmStatic
         val client: OkHttpClient by lazy {
+            val builder = OkHttpClient.Builder()
+            if (BuildConfig.DEBUG) {
+                builder.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            }
             builder.build()
         }
 

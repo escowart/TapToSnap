@@ -23,6 +23,7 @@ package com.lab49.taptosnap.apis
 import java.io.IOException
 
 import com.lab49.taptosnap.models.Item
+import com.lab49.taptosnap.models.UploadImagePayload
 import com.lab49.taptosnap.models.UploadImageResponse
 
 import com.squareup.moshi.Json
@@ -76,22 +77,22 @@ class ItemApi(runOnUiThread: (Runnable) -> Unit, basePath: kotlin.String = defau
     /**
     * Upload image for the given item
     * Upload image for the given item
-    * @param imageLabel  
-    * @param image  
+    * @param uploadImagePayload  (optional)
     * @return UploadImageResponse
     * @throws IllegalStateException If the request is not correctly configured
     * @throws IOException Rethrows the OkHttp execute method exception
     */
     @Throws(IllegalStateException::class, IOException::class)
-    fun uploadImage(imageLabel: kotlin.String, image: java.io.File, 
+    fun uploadImage(uploadImagePayload: UploadImagePayload?, 
         callback: (response: ApiResponse<UploadImageResponse>) -> Unit
     ) {
-        val body = mapOf("imageLabel" to imageLabel, "image" to image)
+        val body = uploadImagePayload
         val query: MultiValueMap = mutableMapOf()
-        val headers: MutableMap<String, String> = mutableMapOf("Content-Type" to "multipart/form-data")
+        val headers: MutableMap<String, String> = mutableMapOf()
+        headers["Content-Type"] = "application/json"
         headers["Accept"] = "application/json"
 
-        val config = RequestConfig<Map<String, Any?>>(
+        val config = RequestConfig<UploadImagePayload>(
             method = RequestMethod.POST,
             path = "/item/image",
             query = query,

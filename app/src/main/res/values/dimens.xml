@@ -8,6 +8,7 @@
     <dimen name="tile_inner_spacing">15dp</dimen>
     <dimen name="tile_height">263dp</dimen>
     <dimen name="tile_text_height">54dp</dimen>
+    <dimen name="tile_image_height">209dp</dimen>
     <dimen name="large_font_size">48sp</dimen>
     <dimen name="medium_font_size">28sp</dimen>
     <dimen name="small_font_size">24sp</dimen>

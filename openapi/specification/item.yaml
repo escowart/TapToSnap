@@ -21,19 +21,9 @@ paths:
         - item
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
               $ref: "#/components/schemas/UploadImagePayload"
-            encoding: # The same level as schema
-              imageLabel:
-                contentType: application/json; charset=utf-8
-              image:
-                contentType: image/png; image/jpeg
-                headers:
-                  X-Rate-Limit-Limit:
-                    description: The number of allowed requests in the current period
-                    schema:
-                      type: integer
       responses:
         "200":
           content:
@@ -63,7 +53,6 @@ components:
           type: string
         image:
           type: string
-          format: binary
       required:
         - imageLabel
         - image

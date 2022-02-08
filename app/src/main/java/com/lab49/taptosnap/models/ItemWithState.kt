@@ -1,5 +1,7 @@
 package com.lab49.taptosnap.models
 
+import android.graphics.Bitmap
+
 /**
  * Created by Edwin S. Cowart on 06 February, 2022
  * Lab49 Take-Home
@@ -7,7 +9,9 @@ package com.lab49.taptosnap.models
  */
 data class ItemWithState(
     private val item: Item,
-    var state: ItemState = ItemState.Default
+    val index: Int,
+    var state: ItemState = ItemState.Default,
+    var bitmap: Bitmap? = null
 ) {
     val id: Int
         get() = item.id
