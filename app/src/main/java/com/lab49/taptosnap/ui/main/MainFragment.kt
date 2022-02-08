@@ -80,6 +80,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
             binding.tileText.text = item.name
             // TODO - image has to rounded
             // TODO - background actually overlays the image (
+            binding.tileCamera.visibility = if (item.state == ItemState.Default) View.VISIBLE else View.GONE
             binding.root.setOnClickListener {
                 if (item.state in arrayOf(ItemState.Success, ItemState.Verifying)) return@setOnClickListener
                 cameraLauncher.launch(item.index)
@@ -88,10 +89,9 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
                 binding.tileImage.setImageBitmap(item.bitmap)
             }
             binding.root.setBackgroundResource(when (item.state) {
-                ItemState.Default -> R.drawable.tile_default
-                ItemState.Verifying -> R.drawable.tile_verifying
                 ItemState.Incorrect -> R.drawable.tile_incorrect
                 ItemState.Success -> R.drawable.tile_success
+                else -> R.drawable.tile_gradient
             })
         }
         binding.tileRecyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
