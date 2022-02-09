@@ -27,6 +27,7 @@
         android:layout_height="@dimen/tile_camera_height"/>
     <ProgressBar
         android:id="@+id/tileSpinner"
+        android:theme="@style/Theme.TapToSnap.ProgressBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

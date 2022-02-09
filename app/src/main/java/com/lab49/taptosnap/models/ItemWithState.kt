@@ -10,8 +10,7 @@ import android.graphics.Bitmap
 data class ItemWithState(
     private val item: Item,
     val index: Int,
-    var state: ItemState = ItemState.Default,
-    var bitmap: Bitmap? = null
+    var state: ItemState = ItemState.Default
 ) {
     val id: Int
         get() = item.id

@@ -10,4 +10,10 @@
     <string name="error">Error</string>
     <string name="ok">OK</string>
     <string name="retry">Retry</string>
+    <string name="nice_job">Nice Job!</string>
+    <string name="game_over">Game Over!</string>
+    <string name="game_won">Congratulations!! You\'ve won the game!</string>
+    <string name="ran_out_of_time">You\'ve run out of time!</string>
+    <string name="restart">Restart</string>
+    <string name="exit">Exit</string>
 </resources>

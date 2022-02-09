@@ -44,21 +44,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/leftButton"
             android:text="@string/left"
-            style="@style/Theme.TapToSnap.Button"
+            style="@style/Theme.TapToSnap.Button.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dialog_button_padding_horizontal"
             android:paddingHorizontal="@dimen/dialog_button_padding_horizontal"
             />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:layout_gravity="center"
             android:id="@+id/rightButton"
             android:text="@string/right"
-            style="@style/Theme.TapToSnap.Button"
+            style="@style/Theme.TapToSnap.Button.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dialog_button_padding_horizontal"

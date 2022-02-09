@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.viewbinding.ViewBinding
+import com.lab49.taptosnap.R
 
 /**
  * Created by Edwin S. Cowart on 04 February, 2022
@@ -23,6 +26,9 @@ abstract class BaseFragment<Binding : ViewBinding> : Fragment() {
     // isSafe is used to check if callbacks are still valid
     val isSafe: Boolean
         get() = activity != null && isAdded && !isDetached && !isRemoving
+
+    val BaseFragment<*>.navController: NavController
+        get() = requireActivity().findNavController(R.id.nav_host_fragment_content_main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

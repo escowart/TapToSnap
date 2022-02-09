@@ -30,5 +30,16 @@
         <argument
             android:name="items"
             app:argType="com.lab49.taptosnap.models.Items"/>
+
+        <action
+            android:id="@+id/toLandingFragment"
+            app:destination="@id/LandingFragment"
+            app:popUpTo="@id/MainFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_left"
+            />
     </fragment>
 </navigation>

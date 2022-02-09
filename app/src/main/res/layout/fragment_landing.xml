@@ -21,7 +21,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/letsGoButon"
         android:text="@string/lets_go"
-        style="@style/Theme.TapToSnap.Button"
+        style="@style/Theme.TapToSnap.Button.Small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/bottom_margin"

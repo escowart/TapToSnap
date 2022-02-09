@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.TapToSnap" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/pink</item>
-        <item name="colorPrimaryVariant">@color/pink_dark</item>
+        <item name="colorPrimary">@color/tile_gray_dark</item>
+        <item name="colorPrimaryVariant">@color/tile_gray</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/pink</item>
@@ -48,9 +48,16 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="Theme.TapToSnap.Button" parent="@style/Widget.AppCompat.Button" >
+    <style name="Theme.TapToSnap.Button.Small" parent="@style/Widget.AppCompat.Button" >
         <item name="android:fontFamily">@font/karla_bold</item>
         <item name="android:textSize">@dimen/small_font_size</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/button_pink</item>
+    </style>
+
+    <style name="Theme.TapToSnap.Button.VerySmall" parent="@style/Widget.AppCompat.Button" >
+        <item name="android:fontFamily">@font/karla_bold</item>
+        <item name="android:textSize">@dimen/extra_small_font_size</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/button_pink</item>
     </style>
@@ -58,5 +65,9 @@
     <style name="Theme.TapToSnap.RoundedImageCorner" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">@dimen/tile_corner_radius</item>
+    </style>
+
+    <style name="Theme.TapToSnap.ProgressBar">
+        <item name="colorAccent">@color/white</item> <!-- Whatever color you want-->
     </style>
 </resources>
