@@ -13,4 +13,5 @@
     <color name="tile_gray">#584D5D</color>
     <color name="tile_gray_dark">#473C4D</color>
     <color name="transparent">#00000000</color>
+    <color name="bg_gray_dark_70_percent">#B3271C2B</color>
 </resources>

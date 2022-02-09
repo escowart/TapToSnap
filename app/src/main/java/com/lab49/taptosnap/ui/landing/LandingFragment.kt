@@ -11,6 +11,7 @@ import com.lab49.taptosnap.ui.BaseFragment
 import com.lab49.taptosnap.models.Items
 import com.lab49.taptosnap.ui.components.navigate
 import com.lab49.taptosnap.ui.components.showErrorDialog
+import com.lab49.taptosnap.ui.components.showProgressSpinnerDialog
 import com.lab49.taptosnap.util.DebugLog
 
 /**
@@ -29,14 +30,22 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     }
 
     private fun getItemsRequest() {
+        val dialog = requireActivity().showProgressSpinnerDialog()
         itemApi.getItems {
             if (!isSafe) {
                 DebugLog.e("Unsafe getItems callback")
                 return@getItems
             }
             when (it) {
-                is Success -> navigate(LandingFragmentDirections.toMainFragment(Items(it.data)))
-                else -> showErrorDialog(error = it, retry = { getItemsRequest() })
+                is Success -> {
+                    dialog.dismiss()
+                    navigate(LandingFragmentDirections.toMainFragment(Items(it.data)))
+                }
+                else -> requireActivity().showErrorDialog(
+                    error = it,
+                    abandon = { dialog.dismiss() },
+                    retry = { getItemsRequest() }
+                )
             }
         }
     }

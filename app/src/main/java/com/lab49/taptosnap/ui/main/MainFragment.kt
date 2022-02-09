@@ -5,6 +5,7 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.lab49.taptosnap.R
@@ -44,7 +45,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
             item.bitmap = it.value
             item.state = ItemState.Verifying
             binding.tileRecyclerView.adapter?.notifyItemChanged(it.index, item)
-            DebugLog.e("notifyItemChanged(index=${it.index}, state=${item.state})")
         }
     }
 
@@ -76,23 +76,45 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
                 innerMargin = R.dimen.tile_inner_spacing
             )
         ) { binding, item ->
-            DebugLog.e("update(index=${item.index}, state=${item.state})")
             binding.tileText.text = item.name
-            // TODO - image has to rounded
-            // TODO - background actually overlays the image (
-            binding.tileCamera.visibility = if (item.state == ItemState.Default) View.VISIBLE else View.GONE
-            binding.root.setOnClickListener {
-                if (item.state in arrayOf(ItemState.Success, ItemState.Verifying)) return@setOnClickListener
-                cameraLauncher.launch(item.index)
-            }
             item.bitmap?.let {
                 binding.tileImage.setImageBitmap(item.bitmap)
             }
-            binding.root.setBackgroundResource(when (item.state) {
-                ItemState.Incorrect -> R.drawable.tile_incorrect
-                ItemState.Success -> R.drawable.tile_success
-                else -> R.drawable.tile_gradient
-            })
+
+            when (item.state) {
+                ItemState.Default -> {
+                    binding.root.setOnClickListener { cameraLauncher.launch(item.index) }
+                    binding.root.setBackgroundResource(R.drawable.tile_gradient)
+                    binding.tileImage.foreground = null
+                    binding.tileCamera.visibility = View.VISIBLE
+                    binding.tileSpinner.visibility = View.GONE
+                    binding.tileTapToTryAgainText.visibility = View.GONE
+                }
+                ItemState.Verifying -> {
+                    binding.root.setOnClickListener(null)
+                    binding.root.setBackgroundResource(R.drawable.tile_gradient)
+                    binding.tileImage.foreground = ResourcesCompat.getDrawable(resources, R.drawable.tile_overlay, null)
+                    binding.tileCamera.visibility = View.GONE
+                    binding.tileSpinner.visibility = View.VISIBLE
+                    binding.tileTapToTryAgainText.visibility = View.GONE
+                }
+                ItemState.Incorrect -> {
+                    binding.root.setOnClickListener { cameraLauncher.launch(item.index) }
+                    binding.root.setBackgroundResource(R.drawable.tile_incorrect)
+                    binding.tileImage.foreground = ResourcesCompat.getDrawable(resources, R.drawable.tile_overlay, null)
+                    binding.tileCamera.visibility = View.GONE
+                    binding.tileSpinner.visibility = View.GONE
+                    binding.tileTapToTryAgainText.visibility = View.VISIBLE
+                }
+                ItemState.Success -> {
+                    binding.root.setOnClickListener(null)
+                    binding.root.setBackgroundResource(R.drawable.tile_success)
+                    binding.tileImage.foreground = null
+                    binding.tileCamera.visibility = View.GONE
+                    binding.tileSpinner.visibility = View.GONE
+                    binding.tileTapToTryAgainText.visibility = View.GONE
+                }
+            }
         }
         binding.tileRecyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
@@ -108,8 +130,9 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
             when (it) {
                 is Success -> {
                     item.state = if (it.data.matched) ItemState.Success else ItemState.Incorrect
+                    binding.tileRecyclerView.adapter?.notifyItemChanged(item.index)
                 }
-                else -> showErrorDialog(
+                else -> requireActivity().showErrorDialog(
                     error = it,
                     abandon = { item.state = ItemState.Incorrect },
                     retry = { uploadImageRequest(item, image) }

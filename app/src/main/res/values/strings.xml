@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Tap To Snap</string>
     <string name="tap_to_snap">Tap to snap</string>
+    <string name="tap_to_try_again">Tap to try again</string>
     <string name="lets_go">LET’S GO!</string>
     <string name="right">Right</string>
     <string name="left">Left</string>

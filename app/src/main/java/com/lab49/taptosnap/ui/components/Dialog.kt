@@ -2,6 +2,7 @@ package com.lab49.taptosnap.ui.components
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Handler
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.StyleRes
@@ -11,6 +12,8 @@ import com.lab49.taptosnap.databinding.DialogActionBinding
 import com.lab49.taptosnap.extensions.getLayoutFromBinding
 import com.lab49.taptosnap.ui.BaseFragment
 import com.lab49.taptosnap.util.DebugLog
+import android.os.Looper
+import com.lab49.taptosnap.databinding.DialogSpinnerBinding
 
 /**
  * Created by Edwin S. Cowart on 06 February, 2022
@@ -36,16 +39,12 @@ inline fun <reified Binding: ViewBinding> Context.createDialog(
     return CreateDialogResult(bind(root), dialog)
 }
 
-fun BaseFragment<*>.showErrorDialog(
+fun Context.showErrorDialog(
     error: Any?,
     abandon: (() -> Unit)? = null,
     retry: (() -> Unit)? = null
 ) {
-    if (!isSafe) {
-        DebugLog.e("Unsafe call to showDialog")
-        return
-    }
-    val result = requireActivity().createDialog(DialogActionBinding::bind)
+    val result = createDialog(DialogActionBinding::bind)
     val binding = result.binding
     val dialog = result.dialog
     dialog.setCancelable(true)
@@ -70,4 +69,15 @@ fun BaseFragment<*>.showErrorDialog(
         binding.rightButton.visibility = View.GONE
     }
     dialog.show()
+}
+
+fun Context.showProgressSpinnerDialog(): Dialog {
+    val result = createDialog(DialogSpinnerBinding::bind)
+    val dialog = result.dialog
+    dialog.setCancelable(false)
+    dialog.setCanceledOnTouchOutside(false)
+    dialog.window!!.setBackgroundDrawableResource(R.color.bg_gray_dark_70_percent)
+    Handler(Looper.getMainLooper()).postDelayed({ dialog.dismiss() }, 10000 /* 10 sec */)
+    dialog.show()
+    return dialog
 }
