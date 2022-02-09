@@ -32,6 +32,11 @@ import java.time.OffsetTime
 import java.util.Locale
 import com.squareup.moshi.adapter
 
+/**
+ * Created by Edwin S. Cowart
+ * Lab49 Take-Home
+ * Tap To Snap
+ */
 open class ApiClient(val runOnUiThread: (Runnable) -> Unit, val baseUrl: String) {
     companion object {
         protected const val ContentType = "Content-Type"

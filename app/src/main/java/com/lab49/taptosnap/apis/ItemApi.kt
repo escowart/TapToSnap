@@ -41,6 +41,11 @@ import com.lab49.taptosnap.infrastructure.ResponseType
 import com.lab49.taptosnap.infrastructure.Success
 import com.lab49.taptosnap.infrastructure.toMultiValue
 
+/**
+ * Created by Edwin S. Cowart
+ * Lab49 Take-Home
+ * Tap To Snap
+ */
 class ItemApi(runOnUiThread: (Runnable) -> Unit, basePath: kotlin.String = defaultBasePath) : ApiClient(runOnUiThread, basePath) {
     companion object {
         @JvmStatic

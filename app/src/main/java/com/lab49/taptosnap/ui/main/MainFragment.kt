@@ -106,13 +106,13 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
         timer = object : CountDownTimer((2 * 60 * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 if (!isSafe) return
-                val minutes = formatMS(millisUntilFinished, "mm:ss")
-                binding.timerText.text = "00:$minutes"
+                val minutesSeconds = formatMS(millisUntilFinished, "mm:ss")
+                binding.timerText.text = getString(R.string.time_format, minutesSeconds)
             }
 
             override fun onFinish() {
                 if (!isSafe) return
-                binding.timerText.text = "00:00:00"
+                binding.timerText.setText(R.string.time_zero)
                 gameDone(won = false)
             }
         }

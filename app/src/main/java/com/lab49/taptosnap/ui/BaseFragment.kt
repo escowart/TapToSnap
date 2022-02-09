@@ -27,7 +27,7 @@ abstract class BaseFragment<Binding : ViewBinding> : Fragment() {
     val isSafe: Boolean
         get() = activity != null && isAdded && !isDetached && !isRemoving
 
-    val BaseFragment<*>.navController: NavController
+    val navController: NavController
         get() = requireActivity().findNavController(R.id.nav_host_fragment_content_main)
 
     override fun onCreateView(

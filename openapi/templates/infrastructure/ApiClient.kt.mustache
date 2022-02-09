@@ -77,6 +77,11 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.squareup.moshi.adapter
 {{/moshi}}
 
+/**
+ * Created by Edwin S. Cowart
+ * Lab49 Take-Home
+ * Tap To Snap
+ */
 {{#nonPublicApi}}internal {{/nonPublicApi}}open class ApiClient(val runOnUiThread: (Runnable) -> Unit, val baseUrl: String) {
     {{#nonPublicApi}}internal {{/nonPublicApi}}companion object {
         protected const val ContentType = "Content-Type"

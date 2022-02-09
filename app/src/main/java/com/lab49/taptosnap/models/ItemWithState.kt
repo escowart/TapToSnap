@@ -1,7 +1,5 @@
 package com.lab49.taptosnap.models
 
-import android.graphics.Bitmap
-
 /**
  * Created by Edwin S. Cowart on 06 February, 2022
  * Lab49 Take-Home

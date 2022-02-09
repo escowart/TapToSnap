@@ -3,6 +3,12 @@ package com.lab49.taptosnap.infrastructure
 import com.squareup.moshi.Json
 import java.io.Serializable
 
+/**
+ * Created by Edwin S. Cowart
+ * Lab49 Take-Home
+ * Tap To Snap
+ */
+
 enum class ResponseType {
     Success, Informational, Redirection, ClientError, ServerError
 }

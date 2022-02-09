@@ -9,6 +9,8 @@ import androidx.viewbinding.ViewBinding
 import com.lab49.taptosnap.R
 import com.lab49.taptosnap.databinding.DialogActionBinding
 import com.lab49.taptosnap.extensions.getLayoutFromBinding
+import com.lab49.taptosnap.infrastructure.ClientError
+import com.lab49.taptosnap.infrastructure.ServerError
 
 /**
  * Created by Edwin S. Cowart on 06 February, 2022
@@ -48,8 +50,12 @@ fun Context.showErrorDialog(
     dialog.window!!.setBackgroundDrawableResource(R.color.transparent)
 
     binding.title.setText(R.string.error)
-    // TODO - extract the error message
-    binding.message.text = error.toString()
+    binding.message.text = when (error) {
+        is ClientError<*> -> error.message
+        is ServerError<*> -> error.message
+        is Error -> error.message
+        else -> toString()
+    }
     binding.leftButton.setText(R.string.ok)
     binding.leftButton.setOnClickListener {
         abandon?.invoke()

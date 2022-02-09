@@ -44,6 +44,11 @@ import {{packageName}}.infrastructure.ResponseType
 import {{packageName}}.infrastructure.Success
 import {{packageName}}.infrastructure.toMultiValue
 
+/**
+ * Created by Edwin S. Cowart
+ * Lab49 Take-Home
+ * Tap To Snap
+ */
 {{#operations}}
 {{#nonPublicApi}}internal {{/nonPublicApi}}class {{classname}}(runOnUiThread: (Runnable) -> Unit, basePath: kotlin.String = defaultBasePath) : ApiClient(runOnUiThread, basePath) {
     companion object {
