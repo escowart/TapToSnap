@@ -1,19 +1,21 @@
-package com.lab49.taptosnap.ui.main
+package com.lab49.taptosnap.ui.game
 
-import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.lab49.taptosnap.R
 import com.lab49.taptosnap.apis.itemApi
 import com.lab49.taptosnap.databinding.DialogActionBinding
-import com.lab49.taptosnap.databinding.FragmentMainBinding
+import com.lab49.taptosnap.databinding.FragmentGameBinding
 import com.lab49.taptosnap.databinding.TileImageBinding
+import com.lab49.taptosnap.extensions.capitalizeFirst
 import com.lab49.taptosnap.extensions.encodeAsBase64
+import com.lab49.taptosnap.extensions.setForegroundDrawable
 import com.lab49.taptosnap.infrastructure.Success
 import com.lab49.taptosnap.models.ItemState
 import com.lab49.taptosnap.models.ItemWithState
@@ -32,17 +34,19 @@ import java.util.*
  * Lab49 Take-Home
  * Tap To Snap
  */
-class MainFragment : BaseFragment<FragmentMainBinding>() {
-    private lateinit var timer: CountDownTimer
+class GameFragment : BaseFragment<FragmentGameBinding>() {
+    private var timer: CountDownTimer? = null
+    private var handler: Handler? = null
+    private var gameWonDelay: Runnable? = null
     private lateinit var items: List<ItemWithState>
+    private val gameWon: Boolean
+        get() = items.all { item -> item.state is ItemState.Success }
+    private var gameAlreadyEnded = false
+
     private val cameraLauncher = registerForActivityResult(
         CameraActivityContract()
     ) {
         it?.let {
-            if (!isSafe) {
-                DebugLog.e("Unsafe camera activity callback")
-                return@registerForActivityResult
-            }
             val item = items[it.index]
             item.state = ItemState.Verifying(it.value)
             binding.tileRecyclerView.adapter?.notifyItemChanged(it.index, item)
@@ -61,8 +65,11 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
                 is Success -> {
                     item.state = if (it.data.matched) ItemState.Success(state.bitmap) else ItemState.Incorrect(state.bitmap)
                     binding.tileRecyclerView.adapter?.notifyItemChanged(item.index)
-                    if (items.all { item -> item.state is ItemState.Success }) {
-                        gameDone(won = true)
+                    if (gameWon) {
+                        handler = Handler(Looper.getMainLooper())
+                        gameWonDelay = Runnable { endOfGame() }
+                        // Delay the win by a second so the player has time to see the tile turn green
+                        handler!!.postDelayed(gameWonDelay!!, 1000)
                     }
                 }
                 else -> requireActivity().showErrorDialog(
@@ -74,21 +81,26 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
         }
     }
 
-    private fun gameDone(won: Boolean) {
-        timer.cancel()
+    @Synchronized
+    private fun endOfGame() {
+        if (gameAlreadyEnded) return
+        gameAlreadyEnded = true
+        timer?.cancel()
+        gameWonDelay?.let { handler?.removeCallbacks(it) }
         val result = requireActivity().createDialog(DialogActionBinding::bind)
         val binding = result.binding
         val dialog = result.dialog
         dialog.setCancelable(false)
         dialog.setCanceledOnTouchOutside(false)
-        dialog.window!!.setBackgroundDrawableResource(R.color.transparent)
-
+        dialog.window?.setBackgroundDrawableResource(R.color.transparent)
+        // Handle the race condition between the two ways the game ends
+        val won = gameWon
         binding.title.setText(if (won) R.string.nice_job else R.string.game_over)
         binding.message.setText(if (won) R.string.game_won else R.string.ran_out_of_time)
         binding.leftButton.setText(R.string.restart)
         binding.leftButton.setOnClickListener {
             dialog.dismiss()
-            navController.navigate(MainFragmentDirections.toLandingFragment())
+            navController.navigate(GameFragmentDirections.toLandingFragment())
         }
         binding.rightButton.setText(R.string.exit)
         binding.rightButton.setOnClickListener {
@@ -102,7 +114,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
+        binding = FragmentGameBinding.inflate(inflater, container, false)
         timer = object : CountDownTimer((2 * 60 * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 if (!isSafe) return
@@ -113,11 +125,11 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
             override fun onFinish() {
                 if (!isSafe) return
                 binding.timerText.setText(R.string.time_zero)
-                gameDone(won = false)
+                endOfGame()
             }
         }
-        timer.start()
-        items = MainFragmentArgs
+        timer!!.start()
+        items = GameFragmentArgs
             .fromBundle(requireArguments())
             .items
             .items
@@ -131,19 +143,13 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
                 innerMargin = R.dimen.tile_inner_spacing
             )
         ) { binding, item ->
-            binding.tileText.text = item.name.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            }
+            binding.tileText.text = item.name.capitalizeFirst()
             when (val state = item.state) {
                 is ItemState.Default -> {
                     binding.root.setOnClickListener { cameraLauncher.launch(item.index) }
                     binding.root.setBackgroundResource(R.drawable.tile_gradient)
                     binding.tileImage.setImageBitmap(null)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        binding.tileImage.foreground = null
-                    }
+                    binding.tileImage.setForegroundDrawable(null)
                     binding.tileCamera.visibility = View.VISIBLE
                     binding.tileSpinner.visibility = View.GONE
                     binding.tileTapToTryAgainText.visibility = View.GONE
@@ -152,9 +158,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
                     binding.root.setOnClickListener(null)
                     binding.root.setBackgroundResource(R.drawable.tile_gradient)
                     binding.tileImage.setImageBitmap(state.bitmap)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        binding.tileImage.foreground = ResourcesCompat.getDrawable(resources, R.drawable.tile_overlay, null)
-                    }
+                    binding.tileImage.setForegroundDrawable(R.drawable.tile_overlay)
                     binding.tileCamera.visibility = View.GONE
                     binding.tileSpinner.visibility = View.VISIBLE
                     binding.tileTapToTryAgainText.visibility = View.GONE
@@ -163,9 +167,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
                     binding.root.setOnClickListener { cameraLauncher.launch(item.index) }
                     binding.root.setBackgroundResource(R.drawable.tile_incorrect)
                     binding.tileImage.setImageBitmap(state.bitmap)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        binding.tileImage.foreground = ResourcesCompat.getDrawable(resources, R.drawable.tile_overlay, null)
-                    }
+                    binding.tileImage.setForegroundDrawable(R.drawable.tile_overlay)
                     binding.tileCamera.visibility = View.GONE
                     binding.tileSpinner.visibility = View.GONE
                     binding.tileTapToTryAgainText.visibility = View.VISIBLE
@@ -174,9 +176,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
                     binding.root.setOnClickListener(null)
                     binding.root.setBackgroundResource(R.drawable.tile_success)
                     binding.tileImage.setImageBitmap(state.bitmap)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        binding.tileImage.foreground = null
-                    }
+                    binding.tileImage.setForegroundDrawable(null)
                     binding.tileCamera.visibility = View.GONE
                     binding.tileSpinner.visibility = View.GONE
                     binding.tileTapToTryAgainText.visibility = View.GONE
@@ -184,5 +184,14 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
             }
         }
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        timer?.cancel()
+        gameWonDelay?.let { handler?.removeCallbacks(it) }
+        handler = null
+        gameWonDelay = null
+        timer = null
     }
 }

@@ -24,9 +24,9 @@
 
     <fragment
         android:id="@+id/MainFragment"
-        android:name="com.lab49.taptosnap.ui.main.MainFragment"
+        android:name="com.lab49.taptosnap.ui.game.GameFragment"
         android:label="Main"
-        tools:layout="@layout/fragment_main">
+        tools:layout="@layout/fragment_game">
         <argument
             android:name="items"
             app:argType="com.lab49.taptosnap.models.Items"/>

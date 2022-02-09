@@ -1,4 +1,4 @@
-package com.lab49.taptosnap.ui.main
+package com.lab49.taptosnap.ui.game
 
 import android.app.Activity
 import android.content.Context
